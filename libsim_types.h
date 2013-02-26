@@ -71,12 +71,12 @@ typedef struct {double *times; state *states; int length;} state_history;
 /**
  * Represents a single rocket stage
  */
-typedef struct {thrust_curve thrust; double area; double Cd;} rocket_stage;
+typedef struct {thrust_curve thrust; double area; double Cd;} stage;
 
 /**
  * A collection of rocket stages with common properties
  */
-typedef struct {rocket_stage *stages; int number_of_stages;} rocket;
+typedef struct {stage *stages; int number_of_stages;} rocket;
 
 
 typedef void   (*integrator)(state *yp, double *xp, double x1, double x2, int *steps);

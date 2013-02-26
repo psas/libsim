@@ -10,7 +10,7 @@
  */
 #include <stdio.h>
 #include <math.h>
-#include "../utils/structs.h"
+#include "../libsim_types.h"
 #include "vector.h"
 
 /**

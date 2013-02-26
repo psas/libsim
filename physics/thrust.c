@@ -6,7 +6,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h> 
-#include "../utils/structs.h"
+#include "../libsim_types.h"
 #include "../math/vector.h"
 #include "../utils/coord.h"
 #include "models/earth.h"

@@ -1,5 +1,5 @@
 #include <math.h>
-#include "structs.h"
+#include "../libsim_types.h"
 #include "../physics/models/earth.h"
 #include "../math/vector.h"
 #include "coord.h"

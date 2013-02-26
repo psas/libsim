@@ -30,7 +30,7 @@
  */
 #include <stdio.h>
 #include <math.h>
-#include "structs.h"
+#include "../libsim_types.h"
 #include "../math/interpolation.h"
 #include "coord.h"
 #include "boundary_conditions.h"

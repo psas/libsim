@@ -9,7 +9,7 @@
  * Includes
  */
 #include <stdio.h>
-#include "../utils/structs.h"
+#include "../libsim_types.h"
 #include "../math/vector.h"
 #include "models/earth.h"
 #include "gravity.h"
