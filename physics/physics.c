@@ -10,26 +10,28 @@
  */
 #include <stdio.h>
 #include "../libsim_types.h"
-#include "models/earth.h"
+//#include "models/earth.h"
 #include "gravity.h"
 #include "aero.h"
 #include "thrust.h"
-#include "../libsim.h"
+//#include "../libsim.h"
 #include "physics.h"
 
 /**
  * Functions
  */
-state_change physics(state s, double t, integration_strategy strategy)
+state_change physics(state s, double t, physics_model_strategy strategy)
 {
-  state_change model;
+    // Return value
+    state_change model;
 
-  vec g = strategy.gravity_model(s);
- 
-  model.acc.v.i = (g.v.i) / s.m;
-  model.acc.v.j = (g.v.j) / s.m;
-  model.acc.v.k = (g.v.k) / s.m;
-  model.m_dot = 0;
-  return model;
+    // Calc gravity
+    vec g = strategy.gravity_model(s);
+
+    model.acc.v.i = (g.v.i) / s.m;
+    model.acc.v.j = (g.v.j) / s.m;
+    model.acc.v.k = (g.v.k) / s.m;
+    model.m_dot = 0;
+
+    return model;
 }
-

@@ -14,6 +14,9 @@
  */
 int main(int argc, char **argv)
 {
+	/// Initilize libsim models
+	
+
 	/// Initilize a rocket
 	double t[2] = {0,1};
 	double m[2] = {1,1};
@@ -35,7 +38,7 @@ int main(int argc, char **argv)
 	state_history *flight_history;
 
     /// Run a simulation
-	final_state = Integrate(initial_rocket, initial_conditions, flight_history);
+	final_state = Integrate_Rocket(initial_rocket, initial_conditions, flight_history);
 
 	return 0; //exit
 }

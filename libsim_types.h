@@ -1,7 +1,6 @@
 /**
  * @file
  * @author  Nathan Bergey <nathan.bergey@gmail.com>
- * @version Monday, May 02 2011
  *
  * @section LICENSE
  *
@@ -16,13 +15,13 @@
  * General Public License for more details at
  * http://www.gnu.org/copyleft/gpl.html
  *
- * @brief All of the Data Structures for the program
+ * @brief Data Structures for libsim
  *
  * @section DESCRIPTION
  *
- * Creates the data structures for Astraea
+ * Data structures for working with libsim
  */
- 
+
 /**
  * @brief Vector (3)
  *
@@ -36,7 +35,9 @@ typedef union vec {
 } vec;
 
 /**
- * Matrix
+ * @brief Matrix (3x3)
+ *
+ * Generic 3x3 matrix 
  */
 typedef union mat3
 {
@@ -83,17 +84,24 @@ typedef struct {thrust_curve thrust; double area; double Cd;} rocket;
  */
 typedef struct {double area; double Cd;} fragment;
 
+/**
+ * Physics model stratagy pattern
+ */
+typedef vec (*gravity)(state s);
+typedef vec (*aero)(state s);
+typedef struct {
+	gravity gravity_model;
+	aero drag_model;
+} physics_model_strategy;
 
 
 
-typedef void   (*integrator)(state *yp, double *xp, double x1, double x2, int *steps);
-typedef vec    (*gravity)   (state s);
-typedef vec    (*aero)      (state s);
 typedef double (*boundary_condition)(state *history, double *x_history, int point_history, double x2);
 
 /**
  *
  */
+/*
 typedef struct {
   integrator integrator;
   int DOF;
@@ -101,7 +109,7 @@ typedef struct {
   gravity gravity_model;
   aero    drag_model;
   } integration_strategy;
-
+*/
 
 /**
  * PI
