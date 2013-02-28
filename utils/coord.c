@@ -116,8 +116,6 @@ double vertical_velocity(state r)
 
 double vertical_acceleration_gee(vec a)
 {
-  double g0 = 9.81;
-  double acc = a.v.i;
-  
-  return acc / g0;
+	double acc = a.v.i;
+	return acc / g_0;
 }
