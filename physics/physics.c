@@ -2,7 +2,6 @@
  * Physics
  *
  * Author: Nathan Bergey
- * Version: Thursday, February 10 2011
  */
 
 /**
@@ -10,11 +9,6 @@
  */
 #include <stdio.h>
 #include "../libsim_types.h"
-//#include "models/earth.h"
-#include "gravity.h"
-#include "aero.h"
-#include "thrust.h"
-//#include "../libsim.h"
 #include "physics.h"
 
 /**

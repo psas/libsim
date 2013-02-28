@@ -15,7 +15,7 @@
 int main(int argc, char **argv)
 {
 	/// Initilize libsim models
-	
+	Init_Model();
 
 	/// Initilize a rocket
 	double t[2] = {0,1};
