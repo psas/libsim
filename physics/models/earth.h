@@ -1,7 +1,6 @@
 /**
  * @file
  * @author  Nathan Bergey <nathan.bergey@gmail.com>
- * @version Wednesday, April 27 2011
  *
  * @section LICENSE
  *
@@ -31,9 +30,11 @@
 /** 
  * Radius of the Earth in m
  */
-#define RADIUS_EARTH 6378.1e3
+#define RADIUS_EARTH 6367.445e3
 
 /** 
  * Standard Gravity (surface gravity)
  */
 #define g_0 9.80665
+
+#define GROUND -423

@@ -6,21 +6,22 @@
 
 vec ECEF2GEO(vec v)
 {
-  double r   = 0;
-  double lat = 0;
-  double lon = 0;
-  vec enu;
-  r = norm(v);
-  if (r > 0.0)
-   lat = acos(v.v.k / r);
-  if (v.v.i != 0.0 && v.v.j != 0)
-   lon = atan2(v.v.j, v.v.i);
+	double r   = 0;
+	double lat = 0;
+	double lon = 0;
+	vec geo;
 
-  enu.v.i = lon;
-  enu.v.j = lat;
-  enu.v.k = r - RADIUS_EARTH;
-  
-  return enu;
+	r = norm(v);
+	if (r > 0.0)
+		lat = acos(v.v.k / r);
+	if (v.v.i != 0.0 && v.v.j != 0.0)
+		lon = atan2(v.v.j, v.v.i);
+
+	geo.v.i = lon;
+	geo.v.j = lat;
+	geo.v.k = r - RADIUS_EARTH;
+
+	return geo;
 }
 
 vec GEO2ECEF(vec v)

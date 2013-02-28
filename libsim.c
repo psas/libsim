@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "libsim_types.h"
 #include "physics/physics.h"
 #include "physics/gravity.h"
@@ -34,7 +35,8 @@
 #define n 7
 
 // Local functions
-static void deriv(double *y ,double *dydx, double t);
+void deriv(double *y ,double *dydx, double t);
+static state rk2state(double *y, double *dydx);
 static void integrate(state y0, state *yp, double *xp, double x1, double x2, int *steps);
 
 // Globals
@@ -45,21 +47,35 @@ void Init_Model(void)
 	physics_model.gravity_model = gravity_sphere;
 }
 
-state Integrate_Rocket(rocket r, state initial_conditions, state_history *history)
+state_history Integrate_Rocket(rocket r, state initial_conditions)
 {
-	state last_state;
+	int i;
 	// History
 	state *yp;
 	double *xp;
 	yp = malloc(sizeof(state) * MAXSTEPS);
 	xp = malloc(sizeof(double) * MAXSTEPS);
+	state_history history;
+	state *h;
+	double *times;
 
 	int steps_taken = 0;
 
 	integrate(initial_conditions, yp, xp, 0, 1, &steps_taken);
 
-	/// Return the final state after integrating
-	return last_state;
+	h = malloc(sizeof(state) * steps_taken);
+	times = malloc(sizeof(double) * steps_taken);
+	for (i=0;i<steps_taken;i++)
+	{
+		h[i] = yp[i];
+		times[i] = xp[i];
+	}
+
+	history.times = times;
+	history.states = h;
+	history.length = steps_taken;
+
+	return history;
 }
 
 static void integrate(state y0, state *yp, double *xp, double x1, double x2, int *steps)
@@ -86,10 +102,10 @@ static void integrate(state y0, state *yp, double *xp, double x1, double x2, int
 
 	// Inital conditions
 	y[0] = y0.x.v.i;
-	y[1] = y0.x.v.j;
-	y[2] = y0.x.v.k;
-	y[3] = y0.v.v.i;
-	y[4] = y0.v.v.j;
+	y[1] = y0.v.v.i;
+	y[2] = y0.x.v.j;
+	y[3] = y0.v.v.j;
+	y[4] = y0.x.v.k;
 	y[5] = y0.v.v.k;
 	dydx[1] = y0.a.v.i;
 	dydx[3] = y0.a.v.j;
@@ -100,6 +116,7 @@ static void integrate(state y0, state *yp, double *xp, double x1, double x2, int
 	{
 		// First RHS call
 		deriv(y, dydx, x);
+		s = rk2state(y, dydx);
 
 		// Store current state
 		xp[stepnum] = x;
@@ -114,6 +131,33 @@ static void integrate(state y0, state *yp, double *xp, double x1, double x2, int
 
 		// One quality controled integrator step
 		rkqc(y, dydx, &x, h, eps, yscale, &hdid, &hnext, n, deriv);
+		s = rk2state(y, dydx);
+
+		// Are we finished?
+		// hit ground
+		if (underground(s))
+		{
+			deriv(y, dydx, x);
+			s = rk2state(y, dydx);
+			xp[stepnum] = x;
+			yp[stepnum] = s;
+			stepnum++;
+			break;
+		}
+
+		// Passed requested integration time
+		if ( (time_to_stop - x) <= 0.0001 )
+		{
+			deriv(y, dydx, x);
+			s = rk2state(y, dydx);
+			xp[stepnum] = x;
+			yp[stepnum] = s;
+			stepnum++;
+			break;
+		}
+
+		// set timestep for next go around
+		h = hnext;
 
 		// Incement step counter
 		stepnum++;
@@ -121,6 +165,24 @@ static void integrate(state y0, state *yp, double *xp, double x1, double x2, int
 
 	(*steps) = stepnum;
 	return;
+}
+
+static state rk2state(double *y, double *dydx)
+{
+	state s;
+	s.x.v.i = y[0];
+	s.v.v.i = y[1];
+	s.x.v.j = y[2];
+	s.v.v.j = y[3];
+	s.x.v.k = y[4];
+	s.v.v.k = y[5];
+	s.m     = y[6];
+
+	s.a.v.i = dydx[1];
+	s.a.v.j = dydx[3];
+	s.a.v.k = dydx[5];
+
+	return s;
 }
 
 void deriv(double *y ,double *dydx, double t)
