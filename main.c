@@ -25,11 +25,11 @@ int main(int argc, char **argv)
                            .length = 2,
                            .Isp = 254
                          };
-	rocket initial_rocket = { .thrust = motor,
+	rocket a_rocket = { .thrust = motor,
                               .area = 0.4,
                               .Cd = 0.8
                             };
-	state initial_conditions = { .x = {.v={0,0,0}},
+	state initial_conditions = { .x = {.v={-2414.59, -3771.092, 4528.117}},
                                  .v = {.v={0,0,0}},
                                  .a = {.v={0,0,0}},
                                  .m = 45
@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 	state_history *flight_history;
 
     /// Run a simulation
-	final_state = Integrate_Rocket(initial_rocket, initial_conditions, flight_history);
+	final_state = Integrate_Rocket(a_rocket, initial_conditions, flight_history);
 
 	return 0; //exit
 }

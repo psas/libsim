@@ -27,6 +27,7 @@
 #include "libsim_types.h"
 #include "physics/physics.h"
 #include "physics/gravity.h"
+#include "math/runge-kutta.h"
 #include "libsim.h"
 
 /// Number of ODE's (3 position, 3 velocity, mass)
@@ -34,10 +35,11 @@
 
 // Local functions
 static void deriv(double *y ,double *dydx, double t);
-static void integrate(state *yp, double *xp, double x1, double x2, int *steps);
+static void integrate(state y0, state *yp, double *xp, double x1, double x2, int *steps);
 
 // Globals
 physics_model_strategy physics_model;
+
 void Init_Model(void)
 {
 	physics_model.gravity_model = gravity_sphere;
@@ -45,36 +47,75 @@ void Init_Model(void)
 
 state Integrate_Rocket(rocket r, state initial_conditions, state_history *history)
 {
-	/// Set the current state from the incoming initial state
-	state current_state = initial_conditions;
-
-	/// Memory for integrator
+	state last_state;
+	// History
 	state *yp;
 	double *xp;
 	yp = malloc(sizeof(state) * MAXSTEPS);
 	xp = malloc(sizeof(double) * MAXSTEPS);
+
 	int steps_taken = 0;
 
-	integrate(yp, xp, 0, 1, &steps_taken);
+	integrate(initial_conditions, yp, xp, 0, 1, &steps_taken);
 
 	/// Return the final state after integrating
-	return current_state;
+	return last_state;
 }
 
-static void integrate(state *yp, double *xp, double x1, double x2, int *steps)
+static void integrate(state y0, state *yp, double *xp, double x1, double x2, int *steps)
 {
-	int stepnum = 0; // Track number of steps the integrator has run
+	int i;
+	int stepnum = 0;   // Track number of steps the integrator has run
 
-	double x = x1; // Current time, begin at x1
+	double x = x1;     // Current time, begin at x1
+	state s;           // Current state
 
-	// Integrator memory, each position in the array is a DOF of the system
-	double y[n];     // array of integrator outputs, y = integral(y' dx)
-	double dydx[n];  // array of RHS, dy/dx
+	// Integrator memory, each position in an array is a DOF of the system
+	double y[n];       // array of integrator outputs, y = integral(y' dx)
+	double dydx[n];    // array of RHS, dy/dx
+	double yscale[n];  // array of yscale factors (integraion error tolorence)
+	double h;          // timestep
+	double hdid;       // stores actual timestep taken by RK45
+	double hnext;      // guess for next timestep
+
+	// stop the integrator
+	double time_to_stop = x2;
+
+	// First guess for timestep
+	h = x2 - x1;
+
+	// Inital conditions
+	y[0] = y0.x.v.i;
+	y[1] = y0.x.v.j;
+	y[2] = y0.x.v.k;
+	y[3] = y0.v.v.i;
+	y[4] = y0.v.v.j;
+	y[5] = y0.v.v.k;
+	dydx[1] = y0.a.v.i;
+	dydx[3] = y0.a.v.j;
+	dydx[5] = y0.a.v.k;
+	y[6] = y0.m;
 
 	while (stepnum <= MAXSTEPS)
 	{
 		// First RHS call
 		deriv(y, dydx, x);
+
+		// Store current state
+		xp[stepnum] = x;
+		yp[stepnum] = s;
+
+		// Y-scaling. Holds down fractional errors
+		for (i=0;i<n;i++) yscale[i] = dydx[i] + TINY;
+
+		// Check for stepsize overshoot
+		if ((x + h) > time_to_stop)
+			h = time_to_stop - x;
+
+		// One quality controled integrator step
+		rkqc(y, dydx, &x, h, eps, yscale, &hdid, &hnext, n, deriv);
+
+		// Incement step counter
 		stepnum++;
 	}
 
