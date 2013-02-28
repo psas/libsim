@@ -50,7 +50,7 @@ vec GEO2ECEF(vec v)
 
 /**
  * ECEF vector to ENU vector
- * Depends on location on Earth, provided as lat/lon pair
+ * <http://www.navipedia.net/index.php/Transformations_between_ECEF_and_ENU_coordinates>
  *
  * @param v     A vector in ECEF coordinates
  * @param lon   A vector in ECEF coordinates
@@ -74,9 +74,34 @@ vec ECEF2ENU(vec v, double lon, double lat)
   return enu;
 }
 
-double altitude(vec ecef_x)
+/**
+ * ENU to ECEF
+ * Rotates a ENU vector to ECEF frame
+ * <http://www.navipedia.net/index.php/Transformations_between_ECEF_and_ENU_coordinates>
+ *
+ * @param enu     An ENU vector
+ * @param lon     current longitude
+ * @param lat     current latitude
+ */
+vec ENU2ECEF(vec enu, double lon, double lat)
 {
-  return norm(ecef_x) - RADIUS_EARTH;
+	double slon = sin(lon);
+	double clon = cos(lon);
+	double slat = sin(lat);
+	double clat = cos(lat);
+
+	mat3 R = { .m={ .x1=-slon,  .x2=-clon*slat,  .x3=clon*clat,
+                    .y1=clon,   .y2=-slon*slat,  .y3=slon*clat,
+                    .z1=0,      .z2=clat,        .z3=slat,      }};
+
+	// Rotate
+	vec ecef = matrix_mult(R, enu);
+	return ecef;
+}
+
+double altitude(vec ecef)
+{
+	return norm(ecef) - RADIUS_EARTH;
 }
 
 double vertical_velocity(state r)

@@ -1,7 +1,6 @@
 /**
  * @file
  * @author  Nathan Bergey <nathan.bergey@gmail.com>
- * @version Sunday, May 01 2011
  *
  * @section LICENSE
  *
@@ -23,22 +22,18 @@
  * Calls all the Unit Tests
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include "integrator.test.h"
-#include "misc.test.h"
 #include "test.h"
 
 int tests_run = 0;
 
-static char * all_tests() {
-  /// Coordinate Transform Tests
-  mu_run_test(coord_transform_test1);
-  mu_run_test(coord_transform_test2);
+static char * all_tests(void) {
 
-  /// Integrator Tests
-  mu_run_test(balistic_test1);
-  mu_run_test(thrust_test1);
-  mu_run_test(thrust_test2);
-  return 0;
+	// Run Integrator Tests:
+	mu_run_test(OneDOF_balistic_test1);
+
+	return 0;
 }
 
 /**
@@ -46,14 +41,14 @@ static char * all_tests() {
  */
 int main(int argc, char **argv)
 {
-  char *result = all_tests();
-  if (result != 0) {
-    printf("%s\n", result);
-    exit(1);
-  }
-  else {
-    printf("\nALL %d TESTS PASSED\n\n", tests_run);
-  }
+	char *result = all_tests();
+	if (result != 0) {
+		printf("%s\n", result);
+		exit(1);
+	}
+	else {
+		printf("\nALL %d TESTS PASSED\n\n", tests_run);
+	}
 
-  return 0;
+	return 0; //exit
 }

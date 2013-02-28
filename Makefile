@@ -1,4 +1,3 @@
-# Compiler
 # Hey Emacs, this is a -*- makefile -*-
 
 #---------------- Compiler Options C ----------------
@@ -22,8 +21,9 @@ FILES += math/*.c
 FILES += utils/*.c
 
 #---------------------- Config -----------------------
-BINDIR=./build/
-LIBDIR=./build/lib/
+BINDIR  = ./build/
+LIBDIR  = ./build/lib/
+TESTDIR = ./build/tests/
 
 
 # Targets:
@@ -36,16 +36,16 @@ ctesting:
 
 build:
 	mkdir -p $(BINDIR)
-	$(CC) main.c $(FILES) $(CFLAGS)  -o $(BINDIR)libsim
+	$(CC) main.c $(FILES) $(CFLAGS) -o $(BINDIR)libsim
 
 clean:
 	rm -rf $(BINDIR)
 
-cleantests:
-	rm -f tests/test
-
-test: cleantests
-	$(CC) -lm -w tests/test.c tests/integrator.test.c tests/misc.test.c $(FILES) -o tests/test
+test:
+	rm -rf $(TESTDIR)
+	mkdir -p $(TESTDIR)
+	$(CC) tests/test.c tests/integrator.test.c $(FILES) $(CFLAGS) -o $(TESTDIR)runtests
+	$(TESTDIR)runtests
 
 lib:
 	mkdir $(LIBDIR)
@@ -54,6 +54,4 @@ lib:
 	cd $(LIBDIR); ld -shared *.o -o libsim.so
 	cd $(LIBDIR); rm -f *.o
 
-dist: clean cleantests
-
-.PHONY: build
+.PHONY: build clean test
