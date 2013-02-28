@@ -47,11 +47,11 @@ double get_thrust_curve_segment(double t)
 {
   if (t < 0)
     return rocket_thrust.m_dot[0];
-  else if (t > rocket_thrust.time[rocket_thrust.n])
+  else if (t > rocket_thrust.time[rocket_thrust.length])
     return 0;
   
   int i;
-  for (i=0;i<=rocket_thrust.n;i++)
+  for (i=0;i<=rocket_thrust.length;i++)
   {
     if (rocket_thrust.time[i] >= t)
     {
@@ -76,7 +76,7 @@ void build_thrust_curve(double fuel, double isp, double avg_thrust, thrust_curve
   
   (*t).time = (double *) malloc(sizeof(double)*n);
   (*t).m_dot = (double *) malloc(sizeof(double)*n);
-  (*t).n = n;
+  (*t).length = n;
   (*t).Isp = isp;
   int i;
   for (i=0;i<n;i++)

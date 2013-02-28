@@ -3,7 +3,7 @@
  */
 #define MAXSTEPS 10000
 
-stage Init_Stage(void);
+state Integrate(rocket r, state initial_conditions, state_history *history);
 
 /**
  * Integration Error Tolorance

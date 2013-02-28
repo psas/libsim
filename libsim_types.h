@@ -56,7 +56,7 @@ typedef struct {vec x; vec v; vec a; double m;} state;
 /**
  * Thrust Curve
  */
-typedef struct {double *time; double *m_dot; int n; double Isp;} thrust_curve;
+typedef struct {double *time; double *m_dot; int length; double Isp;} thrust_curve;
 
 /**
  * Used to return the state from the physics model
@@ -68,15 +68,22 @@ typedef struct {vec acc; double m_dot;} state_change;
  */
 typedef struct {double *times; state *states; int length;} state_history;
 
-/**
- * Represents a single rocket stage
+/*
+ * Model Types: 
  */
-typedef struct {thrust_curve thrust; double area; double Cd;} stage;
 
 /**
- * A collection of rocket stages with common properties
+ * A thrusting rocket
+ * TODO: replace Cd with aero model
  */
-typedef struct {stage *stages; int number_of_stages;} rocket;
+typedef struct {thrust_curve thrust; double area; double Cd;} rocket;
+
+/**
+ * A freefalling piece
+ */
+typedef struct {double area; double Cd;} fragment;
+
+
 
 
 typedef void   (*integrator)(state *yp, double *xp, double x1, double x2, int *steps);
@@ -99,4 +106,4 @@ typedef struct {
 /**
  * PI
  */
-#define Pi 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679
+#define PI 3.141592653589793238462643

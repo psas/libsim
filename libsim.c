@@ -36,10 +36,13 @@
 //void deriv(double *y ,double *dydx, double t);
 //static void integrate(state *yp, double *xp, double x1, double x2, int *steps);
 
-stage Init_Stage(void)
+state Integrate(rocket r, state initial_conditions, state_history *history)
 {
-	stage s;
-	return s;
+	/// Set the current state from the incoming initial state
+	state current_state = initial_conditions;
+
+	/// Return the final state after integrating
+	return current_state;
 }
 
 /**
