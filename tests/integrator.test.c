@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "../libsim_types.h"
 #include "../libsim.h"
 #include "../physics/models/earth.h"
@@ -49,7 +50,7 @@ char *OneDOF_balistic_test1(void)
 	vec velocity = {.v={0,0,intial_velocity}};
 	velocity = ENU2ECEF(velocity, -2.14031, 0.79412);
 	state initial_conditions = { .x = position,
-                                 .v = {.v={0,0,0}},
+                                 .v = velocity,
                                  .a = {.v={0,0,0}},
                                  .m = 45
                                };
@@ -62,9 +63,11 @@ char *OneDOF_balistic_test1(void)
 		double x_error = altitude(history.states[i].x) - exact(history.times[i]);
 		//double v_error = history.states[k].v.v.i - exact_v(history.times[k]);
 
+        //printf("%f, %f (%f),   x_error: %f\n", history.times[i], altitude(history.states[i].x), exact(history.times[i]), fabs(x_error));
+
 		char * err = "\n  (-) Error: OneDOF_balistic_test1()\n        (+) Integration error larger than expected\n";
 
-		mu_assert(err, x_error < 0.001); //To the mm
+	    mu_assert(err, fabs(x_error) < 0.001); //To the mm
 		//mu_assert(err, v_error < 0.001); //To the mm/s
 	}
 
