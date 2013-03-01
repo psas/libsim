@@ -14,7 +14,7 @@ CFLAGS += -Wstrict-prototypes
 CFLAGS += -Wmissing-prototypes
 CFLAGS += -lm
 
-#----------------------- Flies -----------------------
+#----------------------- Files -----------------------
 FILES  = libsim.c 
 FILES += physics/*.c 
 FILES += math/*.c 
