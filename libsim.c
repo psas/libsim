@@ -123,7 +123,9 @@ static void integrate(state y0, state *yp, double *xp, double x1, double x2, int
 		yp[stepnum] = s;
 
 		// Y-scaling. Holds down fractional errors
-		for (i=0;i<n;i++) yscale[i] = dydx[i] + TINY;
+		for (i=0;i<n;i++) {
+			yscale[i] = 0.000000001;//dydx[i]+TINY;
+		}
 
 		// Check for stepsize overshoot
 		if ((x + h) > time_to_stop)

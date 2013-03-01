@@ -44,7 +44,7 @@ clean:
 test:
 	rm -rf $(TESTDIR)
 	mkdir -p $(TESTDIR)
-	$(CC) tests/test.c tests/integrator.test.c $(FILES) $(CFLAGS) -o $(TESTDIR)runtests
+	$(CC) tests/test.c tests/integrator.test.c tests/utils.test.c $(FILES) $(CFLAGS) -o $(TESTDIR)runtests
 	$(TESTDIR)runtests
 
 lib:

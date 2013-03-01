@@ -23,12 +23,16 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include "utils.test.h"
 #include "integrator.test.h"
 #include "test.h"
 
 int tests_run = 0;
 
 static char * all_tests(void) {
+
+	// Run utils tests:
+	mu_run_test(ECEF2GEO_test);
 
 	// Run Integrator Tests:
 	mu_run_test(OneDOF_balistic_test1);
